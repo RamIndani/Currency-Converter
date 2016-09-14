@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Currency Converter</string>
+    <string name="base_url" translatable="false">http://api.fixer.io/</string>
+    <string name="base_currency" translatable="false">USD</string>
+    <string name="base_currency_et_hint">10</string>
+    <string name="error_loading_conversions">Error loading conversions</string>
+    <string name="loading_message">Loading latest conversion rates</string>
+</resources>
