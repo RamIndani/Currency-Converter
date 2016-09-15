@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             if(isBaseSpinnerTouched) {
+                clearInput();
                 //removeListeners();
                 //progress = ProgressDialog.show(getApplicationContext(), getString(R.string.app_name), getString(R.string.loading_message), true);
                 currencyRestUtil.loadCurrentCurrencyRates(getString(R.string.base_url), spnrBaseCurrency.getSelectedItem().toString());
@@ -143,7 +144,10 @@ public class MainActivity extends AppCompatActivity implements Observer{
         }
     };
 
-
+    private void clearInput() {
+        etConversionCurrency.setText("");
+        etBaseCurrency.setText("");
+    }
     View.OnTouchListener conversionSpinnerTouchedListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -158,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
             if(isConversionSpinnerTouched) {
                 updateConversions(spnrConversionCurrency.getSelectedItem().toString());
                 isConversionSpinnerTouched = false;
+
             }
 
         }
@@ -186,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(getCurrentFocus() == etBaseCurrency && !isBaseSpinnerTouched) {
+            if(getCurrentFocus() == etBaseCurrency) {
                 try {
                     if (!s.toString().trim().isEmpty() ) {
                         baseCurrency = Double.valueOf(s.toString());
@@ -217,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(getCurrentFocus() == etConversionCurrency && !isConversionSpinnerTouched) {
+            if(getCurrentFocus() == etConversionCurrency) {
                 try {
                     if (!s.toString().trim().isEmpty()) {
                         convertedCurrency = Double.valueOf(s.toString());
