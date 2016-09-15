@@ -23,8 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:hint="@string/base_currency_et_hint"
-
         android:inputType="numberDecimal" />
     </LinearLayout>
     <LinearLayout

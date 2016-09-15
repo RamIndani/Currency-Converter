@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements Observer{
     @Override
     public void onSaveInstanceState(Bundle saveInstanceState) {
         super.onSaveInstanceState(saveInstanceState);
-        removeListeners();
         if (!etBaseCurrency.getText().toString().trim().isEmpty()) {
             saveInstanceState.putDouble("base", Double.valueOf(etBaseCurrency.getText().toString()));
         }
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
         }
         if (savedInstanceState.containsKey("convertedCurrency")) {
             convertedCurrency = savedInstanceState.getDouble("convertedCurrency");
-            etConversionCurrency.setText(String.valueOf(convertedCurrency));
+            etConversionCurrency.setText(String.format("%.2f",convertedCurrency));
         }
 
         baseSpinnerPosition = savedInstanceState.getInt("baseCurrencyPosition");
@@ -156,10 +155,10 @@ public class MainActivity extends AppCompatActivity implements Observer{
     AdapterView.OnItemSelectedListener conversionSpnrItemSelectedListener = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(isConversionSpinnerTouched) {
-                    updateConversions(spnrConversionCurrency.getSelectedItem().toString());
-                    isConversionSpinnerTouched = false;
-                }
+            if(isConversionSpinnerTouched) {
+                updateConversions(spnrConversionCurrency.getSelectedItem().toString());
+                isConversionSpinnerTouched = false;
+            }
 
         }
 
@@ -170,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements Observer{
     };
 
     private void updateConversions(String currentConversionCurrency) {
-        isUserOperated = true;
+
         if(!etBaseCurrency.getText().toString().trim().isEmpty()) {
             convertedCurrency = dataUtil.convertConversionCurrency(Double.valueOf(etBaseCurrency.getText().toString().trim()), spnrConversionCurrency.getSelectedItem().toString());
-            etConversionCurrency.setText(String.valueOf(convertedCurrency));
+            etConversionCurrency.setText(String.format("%.2f",convertedCurrency));
         }
     }
 
@@ -187,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(getCurrentFocus() == etBaseCurrency) {
+            if(getCurrentFocus() == etBaseCurrency && !isBaseSpinnerTouched) {
                 try {
                     if (!s.toString().trim().isEmpty() ) {
                         baseCurrency = Double.valueOf(s.toString());
@@ -201,7 +200,9 @@ public class MainActivity extends AppCompatActivity implements Observer{
                 }
                 if(baseCurrency>0) {
                     convertedCurrency = dataUtil.convertBaseCurrency(baseCurrency, spnrConversionCurrency.getSelectedItem().toString());
-                    etConversionCurrency.setText(String.valueOf(convertedCurrency));
+                    etConversionCurrency.setText(String.format("%.2f",convertedCurrency));
+                }else{
+                    etConversionCurrency.setText("");
                 }
             }
         }
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(getCurrentFocus() == etConversionCurrency) {
+            if(getCurrentFocus() == etConversionCurrency && !isConversionSpinnerTouched) {
                 try {
                     if (!s.toString().trim().isEmpty()) {
                         convertedCurrency = Double.valueOf(s.toString());
@@ -230,7 +231,9 @@ public class MainActivity extends AppCompatActivity implements Observer{
                 }
                 if(convertedCurrency > 0) {
                     baseCurrency = dataUtil.convertConversionCurrency(convertedCurrency, spnrConversionCurrency.getSelectedItem().toString());
-                    etBaseCurrency.setText(String.valueOf(baseCurrency));
+                    etBaseCurrency.setText(String.format("%.2f",baseCurrency));
+                }else {
+                    etBaseCurrency.setText("");
                 }
             }
         }
@@ -244,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements Observer{
             if(null != progress ) {
                 progress.dismiss();
                 setListeners();
+                isUserOperated = false;
                 updateConversions(spnrConversionCurrency.getSelectedItem().toString());
             }
         }else{
